@@ -60,4 +60,4 @@ jobs:
 
             npm ci
             pm2 delete all || true
-            pm2 start index.js --name express-test
+            pm2 start index.js --name kada-blog-backend
