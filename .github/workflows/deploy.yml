@@ -21,7 +21,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-
       - name: Remove old app.zip
         run: rm -rf app.zip
 
@@ -47,24 +46,26 @@ jobs:
           port: 22
           script: |
             set -e
+            sudo apt-get update
+            sudo apt-get install -y unzip
+
             cd ~
             rm -rf express-test/
             unzip -o app.zip -d express-test
             cd express-test
 
             cat <<EOF> .env
-            JWT_SECRET_KEY= '${{ secrets.JWT_SECRET_KEY }}'
-            GOOGLE_APP_PASSWORD= '${{ secrets.GOOGLE_APP_PASSWORD }}'
-            GOOGLE_CLIENT_ID= '${{ secrets.GOOGLE_CLIENT_ID }}'
-            GOOGLE_SECRET= '${{ secrets.GOOGLE_SECRET }}'
-            AWS_ACCESS_KEY_ID= '${{ secrets.AWS_ACCESS_KEY_ID }}'
-            AWS_SECRET_ACCESS_KEY= '${{ secrets.AWS_SECRET_ACCESS_KEY }}'
-            AWS_BUCKET_NAME= '${{ secrets.AWS_BUCKET_NAME }}'
-            AWS_REGION= '${{ secrets.AWS_REGION }}'
+            JWT_SECRET_KEY='${{ secrets.JWT_SECRET_KEY }}'
+            GOOGLE_APP_PASSWORD='${{ secrets.GOOGLE_APP_PASSWORD }}'
+            GOOGLE_CLIENT_ID='${{ secrets.GOOGLE_CLIENT_ID }}'
+            GOOGLE_SECRET='${{ secrets.GOOGLE_SECRET }}'
+            AWS_ACCESS_KEY_ID='${{ secrets.AWS_ACCESS_KEY_ID }}'
+            AWS_SECRET_ACCESS_KEY='${{ secrets.AWS_SECRET_ACCESS_KEY }}'
+            AWS_BUCKET_NAME='${{ secrets.AWS_BUCKET_NAME }}'
+            AWS_REGION='${{ secrets.AWS_REGION }}'
             EOF
 
             sudo npm ci
             sudo npm i -g pm2
             pm2 delete all || true
-            pm2 start index.js --name express-test
-            
+            pm2 start index.js --name kada-blog
