@@ -46,14 +46,22 @@ jobs:
           port: 22
           script: |
             set -e
+
+            # Update & install unzip
             sudo apt-get update
             sudo apt-get install -y unzip
 
+            # Install Node.js v22 + npm
+            curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+
+            # Extract zip and go to project
             cd ~
             rm -rf express-test/
             unzip -o app.zip -d express-test
             cd express-test
 
+            # Create .env file from GitHub Secrets
             cat <<EOF> .env
             JWT_SECRET_KEY='${{ secrets.JWT_SECRET_KEY }}'
             GOOGLE_APP_PASSWORD='${{ secrets.GOOGLE_APP_PASSWORD }}'
@@ -65,7 +73,8 @@ jobs:
             AWS_REGION='${{ secrets.AWS_REGION }}'
             EOF
 
-            sudo npm ci
+            # Install dependencies and run with PM2
+            npm ci
             sudo npm i -g pm2
             pm2 delete all || true
             pm2 start index.js --name kada-blog
