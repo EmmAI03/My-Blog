@@ -23,8 +23,8 @@ jobs:
       - name: Archive project
         run: zip -r app.zip . -x "*.git*" "*.github*" "node_modules/*" "frontend/*" "deploy.yml"
 
-      - name: Code achive to EC2
-        uses: appleboy/scp-action@0.1.7
+      - name: Code archive to EC2
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
@@ -34,7 +34,7 @@ jobs:
           target: '/home/${{ secrets.EC2_USER }}/app.zip'
 
       - name: Deploy on EC2
-        uses: appleboy/ssh-action@1.0.3
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
