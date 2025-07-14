@@ -12,6 +12,24 @@ const router = Router();
 const storage = multer.memoryStorage(); // atau bisa disesuaikan kalau mau ke disk
 const upload = multer({ storage: storage });
 
+// Signup with profile image upload
+router.post("/signup", upload.single('profileImage'), async (req, res) => {
+    const { email, username, password } = req.body;
+    const profileImage = req.file ? req.file.buffer.toString("base64") : null; // Atau simpan ke S3, atau lokasi lain
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = await User.create({
+            username,
+            email,
+            password: hashedPassword,
+            profileImage
+        });
+        res.status(201).json(user);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
 // Local login
 router.post("/login", passport.authenticate("local", {
     failureMessage: true,
@@ -80,3 +98,4 @@ router.get("/login/google/callback",
 );
 
 export default router;
+
