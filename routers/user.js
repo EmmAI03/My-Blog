@@ -80,4 +80,3 @@ router.get("/login/google/callback",
 );
 
 export default router;
-
